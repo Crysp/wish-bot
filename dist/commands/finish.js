@@ -11,6 +11,7 @@ const videosBucket = (0, messageBucket_1.createBucket)(config_1.finishVideos);
 async function finish(bot, chatId) {
     const video = videosBucket.getItem(chatId);
     (0, activeChats_1.removeChat)(chatId);
+    await bot.sendMessage(chatId, config_1.finishMessage.text, { parse_mode: 'Markdown' });
     await bot.sendChatAction(chatId, 'upload_video');
     await bot.sendVideoNote(chatId, path_1.default.join(process.cwd(), video), {
         reply_markup: {
