@@ -111,7 +111,6 @@ bot.on('callback_query', async callbackQuery => {
   switch (callbackQuery.data) {
     case BEGIN_COMMAND:
       if (callbackQuery.message) {
-        await rules(bot, callbackQuery.message.chat.id);
         await ready(bot, callbackQuery.message.chat.id);
       }
   }
