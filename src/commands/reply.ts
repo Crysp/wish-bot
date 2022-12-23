@@ -1,31 +1,35 @@
-import TelegramBot, { SendMessageOptions } from 'node-telegram-bot-api';
-import { actions, replyVariants } from '../config';
+import TelegramBot from 'node-telegram-bot-api';
 import path from 'path';
-import fs from 'fs';
-import { incrementWish } from '../activeChats';
+import {
+  actions,
+  replyVideos,
+  replyMessage,
+  moreThanOneWishFareWell,
+} from '../config';
+import { countWishes, incrementWish } from '../activeChats';
 import { createBucket } from '../utils/messageBucket';
 
-const replyBucket = createBucket(replyVariants);
+const videosBucket = createBucket(replyVideos);
 
 export default async function reply(bot: TelegramBot, chatId: number) {
-  const reply = replyBucket.getItem(chatId);
-  const replyOptions: SendMessageOptions = {
+  const video = videosBucket.getItem(chatId);
+
+  incrementWish(chatId);
+
+  await bot.sendMessage(chatId, replyMessage.text, {
     parse_mode: 'Markdown',
     disable_web_page_preview: true,
     reply_markup: {
-      keyboard: [
-        [{ text: actions.one_more_wish.text }],
-        [{ text: actions.finish.text }],
-      ],
+      keyboard: [[{ text: actions.one_more_wish.text }]],
     },
-  };
-  if (reply.image && fs.existsSync(path.join(process.cwd(), reply.image))) {
-    await bot.sendPhoto(chatId, path.join(process.cwd(), reply.image), {
-      caption: reply.text,
-      ...replyOptions,
+  });
+  await bot.sendChatAction(chatId, 'upload_video');
+  await bot.sendVideoNote(chatId, path.join(process.cwd(), video));
+
+  if (countWishes(chatId) > 1) {
+    await bot.sendMessage(chatId, moreThanOneWishFareWell.text, {
+      parse_mode: 'Markdown',
+      disable_web_page_preview: true,
     });
-  } else {
-    await bot.sendMessage(chatId, reply.text, replyOptions);
   }
-  incrementWish(chatId);
 }

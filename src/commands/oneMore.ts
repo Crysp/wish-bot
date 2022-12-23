@@ -5,5 +5,8 @@ export default async function oneMore(bot: TelegramBot, chatId: number) {
   await bot.sendMessage(chatId, oneMoreWishReply.text, {
     parse_mode: 'Markdown',
     disable_web_page_preview: true,
+    reply_markup: {
+      remove_keyboard: true,
+    },
   });
 }

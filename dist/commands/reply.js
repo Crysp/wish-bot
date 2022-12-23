@@ -3,33 +3,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const config_1 = require("../config");
 const path_1 = __importDefault(require("path"));
-const fs_1 = __importDefault(require("fs"));
+const config_1 = require("../config");
 const activeChats_1 = require("../activeChats");
 const messageBucket_1 = require("../utils/messageBucket");
-const replyBucket = (0, messageBucket_1.createBucket)(config_1.replyVariants);
+const videosBucket = (0, messageBucket_1.createBucket)(config_1.replyVideos);
 async function reply(bot, chatId) {
-    const reply = replyBucket.getItem(chatId);
-    const replyOptions = {
+    const video = videosBucket.getItem(chatId);
+    (0, activeChats_1.incrementWish)(chatId);
+    await bot.sendMessage(chatId, config_1.replyMessage.text, {
         parse_mode: 'Markdown',
         disable_web_page_preview: true,
         reply_markup: {
-            keyboard: [
-                [{ text: config_1.actions.one_more_wish.text }],
-                [{ text: config_1.actions.finish.text }],
-            ],
+            keyboard: [[{ text: config_1.actions.one_more_wish.text }]],
         },
-    };
-    if (reply.image && fs_1.default.existsSync(path_1.default.join(process.cwd(), reply.image))) {
-        await bot.sendPhoto(chatId, path_1.default.join(process.cwd(), reply.image), {
-            caption: reply.text,
-            ...replyOptions,
+    });
+    await bot.sendChatAction(chatId, 'upload_video');
+    await bot.sendVideoNote(chatId, path_1.default.join(process.cwd(), video));
+    if ((0, activeChats_1.countWishes)(chatId) > 1) {
+        await bot.sendMessage(chatId, config_1.moreThanOneWishFareWell.text, {
+            parse_mode: 'Markdown',
+            disable_web_page_preview: true,
         });
     }
-    else {
-        await bot.sendMessage(chatId, reply.text, replyOptions);
-    }
-    (0, activeChats_1.incrementWish)(chatId);
 }
 exports.default = reply;

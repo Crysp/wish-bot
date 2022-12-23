@@ -3,20 +3,23 @@ import { saveLine } from './sheets';
 import start from './commands/start';
 import help from './commands/help';
 import reply from './commands/reply';
-import finish from './commands/finish';
 import { rules } from './commands/rules';
 import ready from './commands/ready';
 import { isActiveChat } from './activeChats';
-import { actions, BEGIN_COMMAND, BOT_TOKEN } from './config';
+import {
+  actions,
+  BEGIN_COMMAND,
+  BOT_TOKEN,
+  USER_WISH_MINIMUM_WORDS,
+} from './config';
 import startNotification from './commands/startNotification';
 import oneMore from './commands/oneMore';
 
-const commands = ['start', 'help', 'rules', 'finish'] as const;
+const commands = ['start', 'help', 'rules'] as const;
 
 type InputKey =
   | `is${Capitalize<typeof commands[number]>}`
   | 'isOther'
-  | 'isFastReply'
   | 'isOneMore';
 
 const Input: Record<InputKey, RegExp> = {
@@ -31,11 +34,9 @@ const Input: Record<InputKey, RegExp> = {
   isOther: new RegExp(
     `^(?!${commands.map(command => `\/${command}`).join('|')}|${[
       actions.one_more_wish.text,
-      actions.finish.text,
     ].join('|')}).*$`,
   ),
   isOneMore: new RegExp(actions.one_more_wish.text),
-  isFastReply: new RegExp(`(${[actions.finish.text].join('|')})`),
 };
 
 function isWishMessage(message: TelegramBot.Message) {
@@ -45,21 +46,10 @@ function isWishMessage(message: TelegramBot.Message) {
   const words = [
     ...new Intl.Segmenter('ru', { granularity: 'word' }).segment(message.text),
   ];
-  return words.filter(segment => segment.isWordLike).length >= 3;
-}
-
-function isContinueReply(message: TelegramBot.Message) {
-  if (!message.text) {
-    return false;
-  }
-  return message.text === actions.one_more_wish.text;
-}
-
-function isFinishRequest(message: TelegramBot.Message) {
-  if (!message.text) {
-    return false;
-  }
-  return message.text === actions.finish.text;
+  return (
+    words.filter(segment => segment.isWordLike).length >=
+    USER_WISH_MINIMUM_WORDS
+  );
 }
 
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
@@ -81,16 +71,6 @@ bot.onText(Input.isStart, async message => {
   await start(bot, message.chat.id);
 });
 
-bot.onText(Input.isFastReply, async message => {
-  if (isActiveChat(message.chat.id) && isContinueReply(message)) {
-    // to do nothing
-  } else if (!isActiveChat(message.chat.id)) {
-    await startNotification(bot, message.chat.id);
-  } else if (isFinishRequest(message)) {
-    await finish(bot, message.chat.id);
-  }
-});
-
 bot.onText(Input.isOneMore, async message => {
   await oneMore(bot, message.chat.id);
 });
@@ -101,10 +81,6 @@ bot.onText(Input.isHelp, async message => {
 
 bot.onText(Input.isRules, async message => {
   await rules(bot, message.chat.id);
-});
-
-bot.onText(Input.isFinish, async message => {
-  await finish(bot, message.chat.id);
 });
 
 bot.on('callback_query', async callbackQuery => {
