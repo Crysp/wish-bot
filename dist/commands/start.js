@@ -8,6 +8,7 @@ async function start(bot, chatId) {
     });
     await bot.sendMessage(chatId, config_1.welcomeMessage.text, {
         parse_mode: 'Markdown',
+        disable_web_page_preview: true,
         reply_markup: {
             inline_keyboard: [
                 [{ text: config_1.welcomeMessage.button, callback_data: config_1.BEGIN_COMMAND }],

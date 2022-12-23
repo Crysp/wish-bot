@@ -6,6 +6,7 @@ async function ready(bot, chatId) {
     (0, activeChats_1.addChat)(chatId);
     await bot.sendMessage(chatId, config_1.afterStartMessage.text, {
         parse_mode: 'Markdown',
+        disable_web_page_preview: true,
     });
 }
 exports.default = ready;

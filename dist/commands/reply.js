@@ -13,6 +13,7 @@ async function reply(bot, chatId) {
     const reply = replyBucket.getItem(chatId);
     const replyOptions = {
         parse_mode: 'Markdown',
+        disable_web_page_preview: true,
         reply_markup: {
             keyboard: [
                 [{ text: config_1.actions.one_more_wish.text }],
