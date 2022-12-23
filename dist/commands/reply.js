@@ -10,19 +10,29 @@ const messageBucket_1 = require("../utils/messageBucket");
 const videosBucket = (0, messageBucket_1.createBucket)(config_1.replyVideos);
 async function reply(bot, chatId) {
     const video = videosBucket.getItem(chatId);
+    const withOneMoreWishButton = {
+        reply_markup: {
+            inline_keyboard: [
+                [
+                    {
+                        text: config_1.actions.one_more_wish.text,
+                        callback_data: config_1.ONE_MORE_WISH_COMMAND,
+                    },
+                ],
+            ],
+        },
+    };
     (0, activeChats_1.incrementWish)(chatId);
+    const wishesCount = (0, activeChats_1.countWishes)(chatId);
     await bot.sendMessage(chatId, config_1.replyMessage.text, {
         parse_mode: 'Markdown',
         disable_web_page_preview: true,
-        reply_markup: {
-            keyboard: [[{ text: config_1.actions.one_more_wish.text }]],
-            resize_keyboard: true,
-        },
     });
     await bot.sendChatAction(chatId, 'upload_video');
-    await bot.sendVideoNote(chatId, path_1.default.join(process.cwd(), video));
+    await bot.sendVideoNote(chatId, path_1.default.join(process.cwd(), video), wishesCount === 1 ? withOneMoreWishButton : {});
     if ((0, activeChats_1.countWishes)(chatId) > 1) {
         await bot.sendMessage(chatId, config_1.moreThanOneWishFareWell.text, {
+            ...withOneMoreWishButton,
             parse_mode: 'Markdown',
             disable_web_page_preview: true,
         });

@@ -7,9 +7,9 @@ import { rules } from './commands/rules';
 import ready from './commands/ready';
 import { isActiveChat } from './activeChats';
 import {
-  actions,
   BEGIN_COMMAND,
   BOT_TOKEN,
+  ONE_MORE_WISH_COMMAND,
   USER_WISH_MINIMUM_WORDS,
 } from './config';
 import startNotification from './commands/startNotification';
@@ -17,10 +17,7 @@ import oneMore from './commands/oneMore';
 
 const commands = ['start', 'help', 'rules'] as const;
 
-type InputKey =
-  | `is${Capitalize<typeof commands[number]>}`
-  | 'isOther'
-  | 'isOneMore';
+type InputKey = `is${Capitalize<typeof commands[number]>}` | 'isOther';
 
 const Input: Record<InputKey, RegExp> = {
   ...commands.reduce(
@@ -32,11 +29,8 @@ const Input: Record<InputKey, RegExp> = {
     {} as Record<InputKey, RegExp>,
   ),
   isOther: new RegExp(
-    `^(?!${commands.map(command => `\/${command}`).join('|')}|${[
-      actions.one_more_wish.text,
-    ].join('|')}).*$`,
+    `^(?!${commands.map(command => `\/${command}`).join('|')}).*$`,
   ),
-  isOneMore: new RegExp(actions.one_more_wish.text),
 };
 
 function isWishMessage(message: TelegramBot.Message) {
@@ -71,10 +65,6 @@ bot.onText(Input.isStart, async message => {
   await start(bot, message.chat.id);
 });
 
-bot.onText(Input.isOneMore, async message => {
-  await oneMore(bot, message.chat.id);
-});
-
 bot.onText(Input.isHelp, async message => {
   await help(bot, message.chat.id);
 });
@@ -89,5 +79,11 @@ bot.on('callback_query', async callbackQuery => {
       if (callbackQuery.message) {
         await ready(bot, callbackQuery.message.chat.id);
       }
+      break;
+    case ONE_MORE_WISH_COMMAND:
+      if (callbackQuery.message) {
+        await oneMore(bot, callbackQuery.message.chat.id);
+      }
+      break;
   }
 });

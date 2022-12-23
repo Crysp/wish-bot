@@ -8,6 +8,7 @@ type Actions = { one_more_wish: { text: string } };
 export const BOT_TOKEN = config.bot_token;
 
 export const BEGIN_COMMAND = 'begin';
+export const ONE_MORE_WISH_COMMAND = 'one_more_wish';
 
 export const USER_WISH_MINIMUM_WORDS = config.user_wish_minimum_words;
 export const GOOGLE_SHEETS_DOC_ID = config.google_sheets_doc_id;

@@ -20,10 +20,7 @@ const Input = {
         ...result,
         [`is${command.slice(0, 1).toUpperCase().concat(command.slice(1))}`]: new RegExp(`^\/${command}`),
     }), {}),
-    isOther: new RegExp(`^(?!${commands.map(command => `\/${command}`).join('|')}|${[
-        config_1.actions.one_more_wish.text,
-    ].join('|')}).*$`),
-    isOneMore: new RegExp(config_1.actions.one_more_wish.text),
+    isOther: new RegExp(`^(?!${commands.map(command => `\/${command}`).join('|')}).*$`),
 };
 function isWishMessage(message) {
     if (!message.text) {
@@ -52,9 +49,6 @@ bot.onText(Input.isOther, async (message) => {
 bot.onText(Input.isStart, async (message) => {
     await (0, start_1.default)(bot, message.chat.id);
 });
-bot.onText(Input.isOneMore, async (message) => {
-    await (0, oneMore_1.default)(bot, message.chat.id);
-});
 bot.onText(Input.isHelp, async (message) => {
     await (0, help_1.default)(bot, message.chat.id);
 });
@@ -67,5 +61,11 @@ bot.on('callback_query', async (callbackQuery) => {
             if (callbackQuery.message) {
                 await (0, ready_1.default)(bot, callbackQuery.message.chat.id);
             }
+            break;
+        case config_1.ONE_MORE_WISH_COMMAND:
+            if (callbackQuery.message) {
+                await (0, oneMore_1.default)(bot, callbackQuery.message.chat.id);
+            }
+            break;
     }
 });
