@@ -7,6 +7,7 @@ exports.saveLine = void 0;
 const path_1 = __importDefault(require("path"));
 const process_1 = __importDefault(require("process"));
 const googleapis_1 = require("googleapis");
+const config_1 = require("./config");
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 const CREDENTIALS_PATH = path_1.default.join(process_1.default.cwd(), 'credentials.json');
 async function saveLine(user, text) {
@@ -16,7 +17,7 @@ async function saveLine(user, text) {
     });
     const sheets = googleapis_1.google.sheets({ version: 'v4', auth });
     await sheets.spreadsheets.values.append({
-        spreadsheetId: '1xrjNm0MLQcB05Cfo_OxziJyJB-FW14ODkoDUlz9JucM',
+        spreadsheetId: config_1.GOOGLE_SHEETS_DOC_ID,
         range: 'Лист1!A2',
         valueInputOption: 'USER_ENTERED',
         requestBody: {

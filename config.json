@@ -1,5 +1,6 @@
 {
   "bot_token": "5619325353:AAE8aqzWT3QQHhnIEJsWqxBoDgUTQrbITiw",
+  "google_sheets_doc_id": "1QGIw-OdZ58IpMfgSZzVFPFH4MWwe7SKYwj8U_tyovhs",
   "user_wish_minimum_words": 3,
   "welcome": {
     "text": "Привет от команды «Афиши Daily»! Под конец года мы решили собрать новогодние пожелания от подписчиков, которые потом появятся [в нашем канале](https://t.me/+JNVkh46NQGE4Mjcy) в формате праздничных открыток.",

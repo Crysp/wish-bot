@@ -10,6 +10,8 @@ export const BOT_TOKEN = config.bot_token;
 export const BEGIN_COMMAND = 'begin';
 
 export const USER_WISH_MINIMUM_WORDS = config.user_wish_minimum_words;
+export const GOOGLE_SHEETS_DOC_ID = config.google_sheets_doc_id;
+
 export const welcomeMessage: MessageWithButton = config.welcome;
 export const afterStartMessage: SimpleMessage = config.after_start_message;
 export const startNotificationMessage: MessageWithButton =
