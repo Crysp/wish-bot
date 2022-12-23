@@ -32,10 +32,6 @@ async function reply(bot, chatId) {
         await bot.sendVideoNote(chatId, path_1.default.join(process.cwd(), video), withOneMoreWishButton);
     }
     else {
-        await bot.sendMessage(chatId, config_1.replyShortMessage.text, {
-            parse_mode: 'Markdown',
-            disable_web_page_preview: true,
-        });
         await bot.sendMessage(chatId, config_1.moreThanOneWishFareWell.text, {
             ...withOneMoreWishButton,
             parse_mode: 'Markdown',

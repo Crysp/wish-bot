@@ -21,7 +21,6 @@ export const rulesMessage: SimpleMessage = config.rules;
 export const actions: Actions = config.reply_shortcut;
 export const oneMoreWishReply: SimpleMessage = config.one_more_wish_reply;
 export const replyMessage: SimpleMessage = config.reply_message;
-export const replyShortMessage: SimpleMessage = config.reply_short_message;
 export const replyVideos: string[] = config.reply_videos;
 export const moreThanOneWishFareWell: SimpleMessage =
   config.more_that_one_wish_farewell;
