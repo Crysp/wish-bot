@@ -16,6 +16,7 @@ async function reply(bot, chatId) {
         disable_web_page_preview: true,
         reply_markup: {
             keyboard: [[{ text: config_1.actions.one_more_wish.text }]],
+            resize_keyboard: true,
         },
     });
     await bot.sendChatAction(chatId, 'upload_video');
