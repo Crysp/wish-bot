@@ -6,5 +6,6 @@ export default async function ready(bot: TelegramBot, chatId: number) {
   addChat(chatId);
   await bot.sendMessage(chatId, afterStartMessage.text, {
     parse_mode: 'Markdown',
+    disable_web_page_preview: true,
   });
 }

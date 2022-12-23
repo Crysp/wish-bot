@@ -11,6 +11,7 @@ export default async function reply(bot: TelegramBot, chatId: number) {
   const reply = replyBucket.getItem(chatId);
   const replyOptions: SendMessageOptions = {
     parse_mode: 'Markdown',
+    disable_web_page_preview: true,
     reply_markup: {
       keyboard: [
         [{ text: actions.one_more_wish.text }],

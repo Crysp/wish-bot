@@ -7,6 +7,7 @@ export default async function startNotification(
 ) {
   await bot.sendMessage(chatId, startNotificationMessage.text, {
     parse_mode: 'Markdown',
+    disable_web_page_preview: true,
     reply_markup: {
       inline_keyboard: [
         [
